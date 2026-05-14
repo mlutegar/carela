@@ -6,13 +6,18 @@ DEBUG = False
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")  # noqa: F405
 
+_db_url = os.environ.get("DATABASE_URL", "")  # noqa: F405
+if not _db_url:
+    raise Exception("DATABASE_URL environment variable is not set.")
+
 DATABASES = {
     "default": dj_database_url.config(
         env="DATABASE_URL",
-        conn_max_age=600,
-        ssl_require=True,
+        conn_max_age=0,
     )
 }
+
+DATABASES["default"]["OPTIONS"] = {"sslmode": "require"}
 
 CORS_ALLOWED_ORIGINS = os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",")  # noqa: F405
 
